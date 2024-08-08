@@ -69,6 +69,7 @@ const levels = [
 ];
 
 let party = [];
+const maxParty = 6;
 
 function getRandomElement(total) {
   return total[Math.floor(Math.random() * total.length)];
@@ -100,6 +101,27 @@ function renderParty() {
   updateAverageLevel();
 }
 
+function createNewTable() {
+  const container = document.getElementById("party-container");
+  const newTable = document.createElement("table");
+  newTable.id = "partyTable";
+  newTable.innerHTML = `
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Race</th>
+        <th>Class</th>
+        <th>Level</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+  container.innerHTML = ""; // clear existing content
+  container.appendChild(newTable); // append new table
+  party = []; // reset party array
+  renderParty(); // initial render of the new table
+}
+
 // Average calculation
 function updateAverageLevel() {
   if (party.length === 0) {
@@ -114,11 +136,16 @@ function updateAverageLevel() {
   ).textContent = `Average Party Level: ${average}`;
 }
 
-// Generate and add a new party member every 3 seconds
+// generate and add a new party member every second
 setInterval(() => {
-  party.push(generateRandomPartyMember());
-  renderParty();
-}, 3000);
+  if (party.length >= maxParty) {
+    // alert("You have reached your party limit!");
+    createNewTable();
+  } else {
+    party.push(generateRandomPartyMember());
+    renderParty();
+  }
+}, 1000);
 
-// Initial render possible add to end function
+// render it all
 renderParty();
